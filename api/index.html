@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0,viewport-fit=cover">
-    <title>网站中转</title>
+    <title>网站中转站</title>
 </head>
 <body>
     <div id="tips" style="font-size:25px;text-align: center;line-height: 50px;"></div>
@@ -16,7 +16,7 @@
     var isAndroid = ua.indexOf('android') != -1;
     var isIos = (ua.indexOf('iphone') != -1) || (ua.indexOf('ipad') != -1);
 
-    var notice_openBrowser = "<h2>请点击右上角，通过浏览器打开本页面。</h2><br>里面有你不得不看的内容，复制到浏览器打开吧！</br>
+    var notice_openBrowser = "<h2>请点击右上角，通过非QQ浏览器打开本页面。</h2><br/>毕竟里面有你不得不看的内容，故点击右上角【···】选择到浏览器打开吧!"
 
     // 判断是不是在微信客户端打开
     if(isWeixin || isQQ) {
@@ -31,7 +31,7 @@
     } else {
     // 不是微信客户端，直接可以访问链接
     if (urlParmStr == url){
-        urlParmStr = "https://www.tvs1.vip";
+        urlParmStr = "https://www.yiove.com";
     }
     console.log(urlParmStr);
     location.href=urlParmStr;
