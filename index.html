@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-		<title>QQ、微信防红接口 - TVS1</title>
+		<title>凯酷网络防红接口 - TVS1</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
@@ -17,7 +17,21 @@
 
 		<!-- Signup Form -->
 			<form id="signup-form" method="post">
-				<input type="url" name="url" id="url" placeholder="需要跳转的网址" />
+				<input type="url" name="url" id="url" placeholder="需要跳转的网址" required />
+				<div style="margin: 1em 0;">
+					<label for="expire">有效期(天):</label>
+					<select id="expire" name="expire">
+						<option value="1">1天</option>
+						<option value="3">3天</option>
+						<option value="7" selected>7天</option>
+						<option value="30">30天</option>
+						<option value="0">永久</option>
+					</select>
+				</div>
+				<div style="margin: 1em 0;">
+					<label><input type="radio" name="mode" value="direct" checked> 直连</label>
+					<label><input type="radio" name="mode" value="redirect"> 跳转</label>
+				</div>
 				<input type="button" value="生成" onclick="build_url()"/>
 			</form>
 			<p id="b_url"></p>
@@ -27,17 +41,13 @@
 		<!-- Footer -->
 			<footer id="footer">
 				<ul class="icons">
-
-					<li><a href="https://github.com/Qiantigers/qq_fanghong" class="icon brands fa-github" target="_blank"><span class="label">GitHub</span></a></li>
-
 				</ul>
 				<ul class="copyright">
-					<li>&copy; Powered by <a href="https://WWW.TVS1.VIP" target="_blank">TVS1</a></li>
+					<li>&copy; Powered by 凯酷网络</li>
 				</ul>
 			</footer>
 
 		<!-- Scripts -->
 			<script src="assets/js/main.js"></script>
-			<script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script><script>LA.init({id:"K8YSQIj3WDtj9gG6",ck:"K8YSQIj3WDtj9gG6"})</script>
 	</body>
 </html>
