@@ -4,38 +4,103 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0,viewport-fit=cover">
     <title>网站中转站</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+        #tips {
+            font-size: 18px;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        #openInBrowser {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <div id="tips" style="font-size:25px;text-align: center;line-height: 50px;"></div>
+    <div id="tips"></div>
+    <a id="openInBrowser" href="#" style="display:none;">在浏览器中打开</a>
+    
     <script>
-    var url = document.location.toString();
-    var urlParmStr = url.slice(url.indexOf('=')+1);
+    // 解析加密参数
+    function getUrlParams() {
+        var url = window.location.href;
+        var queryString = url.includes('?') ? url.split('?')[1] : '';
+        var params = {};
+        
+        if (queryString) {
+            var pairs = queryString.split('&');
+            for (var i = 0; i < pairs.length; i++) {
+                var pair = pairs[i].split('=');
+                if (pair[0] === 'q') {
+                    try {
+                        // 尝试解码Base64参数
+                        return JSON.parse(atob(pair[1]));
+                    } catch (e) {
+                        console.error('参数解析错误:', e);
+                        return null;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    
+    var params = getUrlParams();
     var ua = navigator.userAgent.toLowerCase();
     var isQQ = ua.indexOf('qq') != -1;
     var isWeixin = ua.indexOf('micromessenger') != -1;
-    var isAndroid = ua.indexOf('android') != -1;
-    var isIos = (ua.indexOf('iphone') != -1) || (ua.indexOf('ipad') != -1);
-
-    var notice_openBrowser = "<h2>请点击右上角，通过非QQ浏览器打开本页面。</h2><br/>毕竟里面有你不得不看的内容，故点击右上角【···】选择到浏览器打开吧!"
-
-    // 判断是不是在微信客户端打开
-    if(isWeixin || isQQ) {
-    // 判断是在Android的微信客户端还是Ios的微信客户端
-    if (isAndroid) {
-    document.getElementById("tips").innerHTML=notice_openBrowser;
-    }else if (isIos) {
-    document.getElementById("tips").innerHTML=notice_openBrowser;
-    }else{
-    document.getElementById("tips").innerHTML=notice_openBrowser;
-    }
+    
+    var notice_openBrowser = "<h2>请点击右上角，通过非QQ/微信浏览器打开本页面</h2>" +
+                            "<p>由于QQ/微信的限制，无法直接打开外部链接。</p>" +
+                            "<p>请点击右上角【···】选择在浏览器中打开。</p>";
+    
+    if (!params || !params.url) {
+        document.getElementById("tips").innerHTML = "<h2>无效的链接参数</h2>";
     } else {
-    // 不是微信客户端，直接可以访问链接
-    if (urlParmStr == url){
-        urlParmStr = "https://www.yiove.com";
+        // 检查链接是否过期
+        if (params.expire > 0) {
+            var expireTime = params.timestamp + (params.expire * 24 * 60 * 60 * 1000);
+            if (new Date().getTime() > expireTime) {
+                document.getElementById("tips").innerHTML = "<h2>链接已过期</h2>" +
+                                                          "<p>此链接已超过有效期(" + params.expire + "天)，请重新生成。</p>";
+                return;
+            }
+        }
+        
+        // 判断是否在QQ/微信中打开
+        if (isWeixin || isQQ) {
+            if (params.mode === 'direct') {
+                // 直连模式 - 嵌套加载
+                var iframe = document.createElement('iframe');
+                iframe.src = params.url;
+                iframe.style.width = '100%';
+                iframe.style.height = '500px';
+                iframe.style.border = 'none';
+                document.body.appendChild(iframe);
+                
+                document.getElementById("tips").innerHTML = "<h3>正在加载内容...</h3>" +
+                                                          "<p>如果内容无法显示，请尝试在浏览器中打开。</p>";
+            } else {
+                // 跳转模式 - 提示浏览器打开
+                document.getElementById("tips").innerHTML = notice_openBrowser;
+                document.getElementById("openInBrowser").style.display = 'inline-block';
+                document.getElementById("openInBrowser").href = params.url;
+            }
+        } else {
+            // 不在QQ/微信中，直接跳转
+            window.location.href = params.url;
+        }
     }
-    console.log(urlParmStr);
-    location.href=urlParmStr;
-    }
-</script>
+    </script>
 </body>
 </html>
